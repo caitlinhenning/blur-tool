@@ -24,7 +24,7 @@ cd privacy-video-blur
 
 # Install dependencies
 pip install -r requirements.txt
-
+```
 ## Usage
 
 To use the PrivacyBlur algorithm on your video files, follow these instructions:
