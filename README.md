@@ -17,10 +17,10 @@ Instructions on how to install the Privacy-First Video Blur Algorithm.
 
 ```bash
 # Clone this repository
-git clone https://github.com/your-repo/privacy-video-blur.git
+git clone https://github.com/caitlinhenning/eecs298.git
 
 # Navigate to the repository
-cd privacy-video-blur
+cd eecs298
 
 # Install dependencies
 pip install -r requirements.txt
