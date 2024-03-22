@@ -1,8 +1,12 @@
 import cv2
 import face_recognition
+import sys
+
+# Get the video file path from command line argument
+video_file = sys.argv[1]
 
 # Open the input video file
-cap = cv2.VideoCapture("example.mp4")
+cap = cv2.VideoCapture(video_file)
 
 # Get the video properties
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
