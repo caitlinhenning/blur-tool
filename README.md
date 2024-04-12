@@ -29,7 +29,12 @@ pip install -r requirements.txt
 
 To use the PrivacyBlur algorithm on your video files, follow these instructions:
 
-1. TODO
+1. Make sure your video file is in the correct directory eecs298
+2. Run the following command:
+```bash
+python3 project.py [your_video_file.mp4 or .mov]
+```
+Your blurred video will be saved at output.mp4. To avoid overwriting output.mp4, rename the file before rerunning the program.
 
 ## Contributors
 
