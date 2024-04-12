@@ -39,9 +39,6 @@ while True:
         face_roi = rgb_frame[top:bottom, left:right]
         blurred_face = cv2.GaussianBlur(face_roi, (51, 51), 0)
 
-        # Draw rectangle around face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-
         # Draw blur over face
         cv2.rectangle(frame, (left, top), (right, bottom), (255, 255, 255), -1)
         frame[top:bottom, left:right] = blurred_face

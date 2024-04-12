@@ -9,7 +9,6 @@ We plan to develop an algorithm to blur or anonymize individuals in the footage 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributors](#contributors)
-- [Discussions](#discussions)
 
 ## Installation
 
