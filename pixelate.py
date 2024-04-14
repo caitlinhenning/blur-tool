@@ -3,6 +3,7 @@ import cv2
 import face_recognition
 from PIL import Image
 import numpy as np
+import cryptidy.asymmetric_encryption
 
 # Documentation: https://medium.com/@charlietapsell1989/python-pixelation-6fc490307a05
 
@@ -21,6 +22,7 @@ def pixelate_region(image, top, right, bottom, left, pixel_size):
     face_image_pil = face_image_pil.resize(face_image.shape[1::-1], Image.NEAREST)
     # Convert back to a NumPy array
     return np.array(face_image_pil)
+
 
 # Get the video file path from command line argument
 video_file = sys.argv[1]
@@ -55,6 +57,26 @@ while True:
 
     # Pixelate each face
     for top, right, bottom, left in face_locations:
+        # save the true face array
+        face = rgb_frame[top:bottom, left:right]
+
+        # Encrypt the face array
+        # Generate a new private and public key pair for encryption
+        private_key, public_key = cryptidy.asymmetric_encryption.generate_keys(2048)
+
+        # Encrypt the array using the public key
+        encrypted_array = cryptidy.asymmetric_encryption.encrypt_message(face, public_key)
+
+        # Append the encrypted array to a file
+        with open('encrypted_faces.txt', 'ab') as file:
+            file.write(encrypted_array)
+            file.write(b'\n')  # Add a newline character to separate each face encryption
+
+        # Append private keys to a file
+        with open('private_keys.txt', 'a') as file:
+            file.write(private_key)
+            file.write('\n')
+
         # Pixelate the face region
         pixelated_face = pixelate_region(rgb_frame, top, right, bottom, left, pixel_size=10)
 
