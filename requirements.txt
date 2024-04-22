@@ -2,3 +2,5 @@ opencv-python
 dlib
 setuptools
 face_recognition
+cryptidy
+cmake

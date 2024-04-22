@@ -31,9 +31,11 @@ To use the PrivacyBlur algorithm on your video files, follow these instructions:
 1. Make sure your video file is in the correct directory eecs298
 2. Run the following command:
 ```bash
-python3 project.py [your_video_file.mp4 or .mov]
+python3 pixelate.py [your_video_file.mp4 or .mov]
 ```
 Your blurred video will be saved at output.mp4. To avoid overwriting output.mp4, rename the file before rerunning the program.
+
+Shuffled faces will be written to `shuffled_faces.txt` and private keys will be written to `private_keys.txt`. Add these files to your `.gitignore`.
 
 ## Contributors
 
@@ -43,7 +45,5 @@ This project is developed by a team of dedicated EECS 298 students:
 - Caitlin Henning
 - Aarti Phatke
 - Dennis Yang
-
-We welcome contributions from the community. If you're interested in contributing, please see our `CONTRIBUTING.md` guide.
 
 ---
