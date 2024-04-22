@@ -5,23 +5,7 @@ from PIL import Image
 import numpy as np
 import cryptidy.asymmetric_encryption
 
-# Documentation: https://medium.com/@charlietapsell1989/python-pixelation-6fc490307a05
-
-# Function to pixelate a region of an image
-def pixelate_region(image, top, right, bottom, left, pixel_size):
-    # Crop the region from the image
-    face_image = image[top:bottom, left:right]
-    # Convert the face region to a PIL Image
-    face_image_pil = Image.fromarray(face_image)
-    # The new dimensions based on the pixel size
-    new_width = face_image_pil.width // pixel_size
-    new_height = face_image_pil.height // pixel_size
-    # Downsample the image to the new dimensions
-    face_image_pil = face_image_pil.resize((new_width, new_height), Image.BICUBIC)
-    # Upsample the image back to original dimensions
-    face_image_pil = face_image_pil.resize(face_image.shape[1::-1], Image.NEAREST)
-    # Convert back to a NumPy array
-    return np.array(face_image_pil)
+# Documentation Reference: https://medium.com/@charlietapsell1989/python-pixelation-6fc490307a05
 
 
 # Get the video file path from command line argument
@@ -93,6 +77,14 @@ while True:
         face = rgb_frame[top:bottom, left:right]
         private_key, public_key = cryptidy.asymmetric_encryption.generate_keys(2048)
         shuffled_face = shuffle_pixels(face, private_key)
+        # Append private keys to a file
+        with open('private_keys.txt', 'a') as file:
+            file.write(private_key)
+            file.write('\n\n')
+        # Append the shuffled faces (type: numpy.ndarray) to a file
+        with open('shuffled_faces.txt', 'a') as file:
+            file.write(str(shuffled_face))
+            file.write('\n\n')
         frame[top:bottom, left:right] = shuffled_face[:, :, ::-1]
 
       
