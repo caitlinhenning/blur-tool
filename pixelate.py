@@ -55,40 +55,49 @@ while True:
     # Find all the faces in the current frame of video
     face_locations = face_recognition.face_locations(rgb_frame)
 
+    import numpy as np
+    import hashlib
+
+    def shuffle_pixels(face, key):
+        # Convert the key to a seed for the random number generator
+        seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
+        rng = np.random.default_rng(seed)
+
+        # Flatten the face array and shuffle it
+        shuffled_face = face.flatten()
+        rng.shuffle(shuffled_face)
+
+        # Reshape the shuffled array back to the original shape
+        shuffled_face = shuffled_face.reshape(face.shape)
+
+        return shuffled_face
+
+    def unshuffle_pixels(shuffled_face, key):
+        # Convert the key to a seed for the random number generator
+        seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
+        rng = np.random.default_rng(seed)
+
+        # Generate a permutation that can unshuffle the pixels
+        permutation = rng.permutation(len(shuffled_face.flatten()))
+
+        # Flatten the shuffled face array and unshuffle it
+        unshuffled_face = shuffled_face.flatten()[permutation.argsort()]
+
+        # Reshape the unshuffled array back to the original shape
+        unshuffled_face = unshuffled_face.reshape(shuffled_face.shape)
+
+        return unshuffled_face
+
     # Pixelate each face
     for top, right, bottom, left in face_locations:
-        # save the true face array
         face = rgb_frame[top:bottom, left:right]
-
-        # Encrypt the face array
-        # Generate a new private and public key pair for encryption
         private_key, public_key = cryptidy.asymmetric_encryption.generate_keys(2048)
+        shuffled_face = shuffle_pixels(face, private_key)
+        frame[top:bottom, left:right] = shuffled_face[:, :, ::-1]
 
-        # Encrypt the array using the public key
-        encrypted_array = cryptidy.asymmetric_encryption.encrypt_message(face, public_key)
-
-        # Append the encrypted array to a file
-        with open('encrypted_faces.txt', 'ab') as file:
-            file.write(encrypted_array)
-            file.write(b'\n')  # Add a newline character to separate each face encryption
-
-        # Append private keys to a file
-        with open('private_keys.txt', 'a') as file:
-            file.write(private_key)
-            file.write('\n')
-
-        # Pixelate the face region
-        pixelated_face = pixelate_region(rgb_frame, top, right, bottom, left, pixel_size=10)
-
-        # Replace the original face region with the pixelated version
-        frame[top:bottom, left:right] = pixelated_face[:, :, ::-1]
-
-    # Write the frame into the output video file
+      
     out.write(frame)
-
-    # Display the resulting image
     cv2.imshow('Video', frame)
-
     # Wait for Enter key to stop
     if cv2.waitKey(25) == 13:
         break
