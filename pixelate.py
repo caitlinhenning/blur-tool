@@ -3,10 +3,41 @@ import cv2
 import face_recognition
 from PIL import Image
 import numpy as np
+import hashlib
 import cryptidy.asymmetric_encryption
 
 # Documentation Reference: https://medium.com/@charlietapsell1989/python-pixelation-6fc490307a05
 
+def shuffle_pixels(face, key):
+    # Convert the key to a seed for the random number generator
+    seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
+    rng = np.random.default_rng(seed)
+
+    # Flatten the face array and shuffle it
+    shuffled_face = face.flatten()
+    rng.shuffle(shuffled_face)
+
+    # Reshape the shuffled array back to the original shape
+    shuffled_face = shuffled_face.reshape(face.shape)
+
+    return shuffled_face
+
+
+def unshuffle_pixels(shuffled_face, key):
+    # Convert the key to a seed for the random number generator
+    seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
+    rng = np.random.default_rng(seed)
+
+    # Generate a permutation that can unshuffle the pixels
+    permutation = rng.permutation(len(shuffled_face.flatten()))
+
+    # Flatten the shuffled face array and unshuffle it
+    unshuffled_face = shuffled_face.flatten()[permutation.argsort()]
+
+    # Reshape the unshuffled array back to the original shape
+    unshuffled_face = unshuffled_face.reshape(shuffled_face.shape)
+
+    return unshuffled_face
 
 # Get the video file path from command line argument
 video_file = sys.argv[1]
@@ -39,39 +70,6 @@ while True:
     # Find all the faces in the current frame of video
     face_locations = face_recognition.face_locations(rgb_frame)
 
-    import numpy as np
-    import hashlib
-
-    def shuffle_pixels(face, key):
-        # Convert the key to a seed for the random number generator
-        seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
-        rng = np.random.default_rng(seed)
-
-        # Flatten the face array and shuffle it
-        shuffled_face = face.flatten()
-        rng.shuffle(shuffled_face)
-
-        # Reshape the shuffled array back to the original shape
-        shuffled_face = shuffled_face.reshape(face.shape)
-
-        return shuffled_face
-
-    def unshuffle_pixels(shuffled_face, key):
-        # Convert the key to a seed for the random number generator
-        seed = int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16) % 10**8
-        rng = np.random.default_rng(seed)
-
-        # Generate a permutation that can unshuffle the pixels
-        permutation = rng.permutation(len(shuffled_face.flatten()))
-
-        # Flatten the shuffled face array and unshuffle it
-        unshuffled_face = shuffled_face.flatten()[permutation.argsort()]
-
-        # Reshape the unshuffled array back to the original shape
-        unshuffled_face = unshuffled_face.reshape(shuffled_face.shape)
-
-        return unshuffled_face
-
     # Pixelate each face
     for top, right, bottom, left in face_locations:
         face = rgb_frame[top:bottom, left:right]
@@ -86,7 +84,6 @@ while True:
             file.write(str(shuffled_face))
             file.write('\n\n')
         frame[top:bottom, left:right] = shuffled_face[:, :, ::-1]
-
       
     out.write(frame)
     cv2.imshow('Video', frame)
