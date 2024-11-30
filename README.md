@@ -2,7 +2,7 @@
 
 ## Description
 
-We plan to develop an algorithm to blur or anonymize individuals in the footage through encryption, thus protecting their privacy. The blurred footage will be the only footage accessible if hacked, since the original video will be encrypted. To unblur the video, only people with the proper cryptographic key will be able to unblur the image and access the original video files. We will surround our discussion on the choices made in designing our algorithm, touching on topics such as privacy, fairness, and surveillance.
+Our project focuses on ensuring the privacy of people being surveilled by CCTV cameras by blurring their faces so that if data is released to the public, their identities will remain protected. We first apply bounding boxes to faces in footage. Then, for the bounding boxes we generate a blur to obscure faces. Each of those blurs come with a corresponding private key that is locally stored and can be sent to other individuals. This blur can be decrypted with the private key, and the original facial features can be accessed. This is useful for situations where original data is needed, such as for court evidence.
 
 ## Table of Contents
 
